@@ -1,0 +1,19 @@
+Explain the activities Done in any of the CICD tools/platforms/scripts.
+
+Git:
+
+
+Jenkins:
+
+
+Zuul:
+
+
+Ansible:
+
+
+Puppet:
+
+
+Groovy:
+

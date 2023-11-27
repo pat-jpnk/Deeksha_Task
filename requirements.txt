@@ -1,0 +1,8 @@
+requests
+filetype
+binaryornot
+xlwt
+pandas
+openpyxl
+numpy
+uuid
