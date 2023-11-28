@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod 
 from typing import ClassVar
 import os
 from binaryornot.check import is_binary
@@ -47,11 +48,21 @@ Should develop the same program using minimum 2-3 different python modules.
 
 # with open closes file if an exception occurs
 
-from abc import ABC, abstractmethod 
+
+# goals: cross operating system, extensibility, DRY
+
+# strict file extension requirements
+
+# notes
+
+# functionality and limitations (only xlsx, only adding xml elements with text one level deep, only appending to text file)
+
+# TODO: type hints
+# TODO: consistent underscores
+
 
 class FileEditor(ABC):
 
-    file_signature: str
     file_extensions: list[str]
 
     @abstractmethod
@@ -63,93 +74,154 @@ class FileEditor(ABC):
         pass
 
     @abstractmethod
-    def verify_file_extension(self, filepath):
+    def file_validation_function():
         pass
 
+    '''
     @abstractmethod
-    def verify_file_signature(self, filepath):
-        pass
+    def verify_file_signature(self, file_validation_function, filepath, file_extensions):
+        if file_validation_function(file_path, file_extensions):
+            return True
+    '''
+
+    def verify_file_extension(self, file_name, file_extensions):
+        file_name_split = file_name.split('.')
+
+        extension_str = ",".join(str(element) for element in file_extensions)
+
+        if len(file_name_split) != 2 or file_name_split[1] not in file_extensions:
+            raise ValueError("invalid filename, valid extensions: " + extension_str)
+
+        else:
+            return True
+        
+    def verify_file_signature(file_validation_function, file_path, file_extensions):
+
 
 
 class TextFileEditor(FileEditor):
 
-    file_signature = ""
     file_extensions = ["txt"]
 
-    def create(self, path ,name):
+    def create(self, path, file_name):
+
         # check dir exists 
 
         if not os.path.isdir(path):
             raise FileNotFoundError("directory does not exist")
 
-        # check legal file name (file ext not necessary but will do)
-        
-        file_name_split = name.split('.')
+        # check file extension
+
+        '''
+        file_name_split = file_name.split('.')
 
         if len(file_name_split) != 2 or file_name_split[1] not in TextFileEditor.file_extensions:
             raise ValueError("invalid filename, .txt extension required")
+        '''
 
-        file_path = os.path.join(path, name)
+        if verify_file_extension(file_name, TextFileEditor.file_extensions):
+            
+            # create file
 
-        # create file
+            file_path = os.path.join(path, file_name)
 
-        try:
-            with open(file_path, 'x') as f:
-                pass
-        except FileExistsError:
-            print("could not create file, already exists")
+            try:
+                with open(file_path, 'x') as f:
+                    pass
+            except FileExistsError:
+                print("could not create file, already exists")
 
 
     def update(self, filepath, content):
         
+        # check file exists 
+
         if not os.path.isfile(filepath):
             raise FileNotFoundError("file does not exists")
 
+        # check file extension and that file is not binary
+
+        '''
+        file_name_split = os.path.split(filepath)[1].split(".")
+
+        if len(file_name_split) != 2 or file_name_split[1] not in TextFileEditor.file_extensions:
+            raise ValueError("invalid filename, .txt extension required")
+
         if is_binary(filepath):
             raise ValueError("provided file is binary, text file required")
+        '''
 
-        content = content.strip() + " \n"
+        if verify_file_signature(is_binary, filepath, TextFileEditor.file_extensions):
 
-        with open(filepath, 'a') as f:
-            f.write(content)
+            # add content
+
+            content = content.strip() + " \n"
+
+            with open(filepath, 'a') as f:
+                f.write(content)
+
+    '''
+    def file_validation_function2(filepath, file_extensions):
+        file_name_split = os.path.split(filepath)[1].split(".")
+
+        if len(file_name_split) != 2 or file_name_split[1] not in file_extensions:
+            raise ValueError("invalid filename, .txt extension required")
+
+        if is_binary(filepath):
+            raise ValueError("provided file is binary, text file required")
+        
+        return True
+    '''
+
+    def file_validation_function(filepath, file_extensions):
+        if is_binary(filepath):
+            raise ValueError("provided file is binary, text file required")
+        else:
+            return True
 
 
-    def verify_file_extension(self, filepath):
-        pass
-        # move to main class as non abstract method for all ?
-
-    def verify_file_signature(self, filepath):
-        pass
-
-# .xlsx
 class ExcelFileEditor(FileEditor):
 
-    file_signature = ""
     file_extensions = ["xlsx", "xlsm"]     # use list, more types ? TODO
 
-    def create(self, path, name):
+    def create(self, path, file_name):
+        
+        # check that dir exists
+
         if not os.path.isdir(path):
             raise FileNotFoundError("directory does not exist")
         
-        file_name_split = name.split('.')
+        # validate file name
+        
+        '''
+        file_name_split = file_name.split('.')
 
-        if len(file_name_split) != 2 or file_name_split[1] not in ExcelFileEditor.file_extensions:      # limit to xlsx ? check reqs
+        if len(file_name_split) != 2 or file_name_split[1] not in ExcelFileEditor.file_extensions:      # TODO: limit to xlsx ? check reqs
             raise ValueError("invalid filename, .xlsx extension required")
+        '''
 
-        file_path = os.path.join(path, name)
+        if verify_file_extension(file_name, TextFileEditor.file_extensions):
 
-        df = pandas.DataFrame()
+            # create file
 
-        # todo: check what if file exists
+            file_path = os.path.join(path, file_name)
 
-        df.to_excel(file_path, index=False, header=False)
+            df = pandas.DataFrame()
+
+            # TODO: check what if file exists
+
+            df.to_excel(file_path, index=False, header=False)
 
 
-    # two sheets in excel can't have the same name
+    # TODO: two sheets in excel can't have the same name
     def update(self, filepath, data, sheet_id):
+
+        # check that data is DataFrame object
 
         if not isinstance(data, pandas.DataFrame):
             raise TypeError("data is required to be a pandas DataFrame")
+
+        # check that file exists and file signature is valid
 
         if not os.path.isfile(filepath):
             raise FileNotFoundError("file does not exists")
@@ -161,6 +233,14 @@ class ExcelFileEditor(FileEditor):
                 raise ValueError("file type not accepted")
         else:
             raise ValueError("file type indeterminate")
+
+        # check that file extension is valid
+
+        file_name_split = os.path.split(filepath)[1].split(".")
+
+        if len(file_name_split) != 2 or file_name_split[1] not in ExcelFileEditor.file_extensions:
+            raise ValueError("invalid filename, .xlsx extension required")
+
 
         # https://openpyxl.readthedocs.io/en/stable/_modules/openpyxl/utils/exceptions.html#InvalidFileException
 
@@ -183,77 +263,62 @@ class ExcelFileEditor(FileEditor):
 # https://github.com/python/cpython/blob/main/Lib/xml/dom/expatbuilder.pys
 class XMLFileEditor(FileEditor):
 
-    file_signature = ""
     file_extensions = ["xml"]
 
-    def create(self, path, name, xml_root):
+    def create(self, path, file_name, xml_root):
+        
+        # check that dir exists
+
         if not os.path.isdir(path):
             raise FileNotFoundError("directory does not exist")
         
-        file_name_split = name.split('.')
+        # validate file extension
+
+        '''
+        file_name_split = file_name.split('.')
 
         if len(file_name_split) != 2 or file_name_split[1] not in XMLFileEditor.file_extensions:   
             raise ValueError("invalid filename, .xml extension required")
-
-        file_path = os.path.join(path, name)
-
-        if os.path.isfile(file_path):
-            raise FileExistsError("could not create file, already exists")
-
-        #xml_document = md.getDOMImplementation().createDocument(None, 'root', None)
-
-        xml_document = md.Document()
-
-        #root = xml_document.createElement("User")
-        #root.setAttribute( "id", 'myIdvalue' )
-        #root.setAttribute( "email", 'blabla@bblabla.com' )
- 
-        #xml_document.appendChild(root)
-
-        
-        root_element = xml_document.createElement(xml_root)
-
-        xml_document.appendChild(root_element)
-        #text = xml_document.createTextNode("")
-        #root_element.appendChild(text)
-
-
-        #productChild = xml_document.createElement('connection')
-        #productChild.setAttribute('formatted-name', 'Federated') 
-        #productChild.setAttribute('inline', 'true') 
-        #root_element.appendChild(productChild)
-
-        '''
-        root_element = xml_document.createElement("tree")
-
-        xml_document.appendChild(root_element)
-
-        
-        productChild = xml_document.createElement('connection')
-        productChild.setAttribute('formatted-name', 'Federated') 
-        productChild.setAttribute('inline', 'true') 
-        root_element.appendChild(productChild)
-
-        text = xml_document.createTextNode("boo")
-        productChild.appendChild(text)
         '''
 
-        xml_content = xml_document.toprettyxml(indent='\t')
+        if verify_file_extension(file_name, TextFileEditor.file_extensions):
 
-        with open(file_path, 'w') as f:
-            f.write(xml_content)
+            # validate that file does not exists
+
+            file_path = os.path.join(path, file_name)
+
+            if os.path.isfile(file_path):
+                raise FileExistsError("could not create file, already exists")
+
+            # create file
+
+            xml_document = md.Document()
+            root_element = xml_document.createElement(xml_root)
+            xml_document.appendChild(root_element)
+            xml_content = xml_document.toprettyxml(indent='\t')
+
+            with open(file_path, 'w') as f:
+                f.write(xml_content)
 
 
     def update(self, filepath, element_name, element_text):
 
-        # updating restricted to adding elements that contain to the root element
-        # due to time reasons
+        # check that file exists and is not binary
 
         if not os.path.isfile(filepath):
             raise FileNotFoundError("file does not exists")
         
         if is_binary(filepath):
             raise ValueError("provided file is binary, text file required")
+
+        # check that file extension is valid
+
+        file_name_split = os.path.split(filepath)[1].split(".")
+
+        if len(file_name_split) != 2 or file_name_split[1] not in XMLFileEditor.file_extensions:
+            raise ValueError("invalid filename, .xml extension required")
+
+        # read contents and verify that it is valid XML
 
         with open(filepath, 'r') as f:
             file_content = f.read()
@@ -263,6 +328,7 @@ class XMLFileEditor(FileEditor):
         except xml.parsers.expat.ExpatError as error:
             print(error)
 
+        # update file contents
 
         root_element = content_dom.documentElement
         new_element = content_dom.createElement(element_name)

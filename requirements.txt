@@ -1,10 +1,6 @@
 requests
 filetype
 binaryornot
-xlwt
 pandas
 openpyxl
 numpy
-uuid
-
-include xml
