@@ -16,7 +16,7 @@ limitations, features and interpretations of task:
 - text files can only be updated by appending new lines text
 - only xlsx excel format is targeted for simplicity, although readily extendable and likely functional with more
   extensions with minimal changes
-- xml files can only be updated by adding new elements with text, one level deep, to the root element / XML of is validated before
+- xml files can only be updated by adding new elements with text, one level deep, to the root element / XML is validated before
   updating new files
 - no experience with XML, except very limited Java Spring videos, might not be implemeted according to best practices (creating 
   XML document without Document Type Definition, etc...)
@@ -27,7 +27,7 @@ limitations, features and interpretations of task:
 - correct file extensions, although not technically required in all cases are made mandatory
 - different file checking methods applied
 - automatic closing, also on exceptions, of files via using "with ... open(...)"
-- code was reflected in last hour to implement DRY principles, no manual testing was performed after due to time issues
+- code was refactored in last hour to implement DRY principles, no manual testing was performed after due to time issues
 
 needed additions:
 - unit testing
