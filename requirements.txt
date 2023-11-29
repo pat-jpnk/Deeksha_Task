@@ -1,6 +1,6 @@
 requests
 filetype
 binaryornot
-pandas
+pandas==1.4.4
 openpyxl
 numpy

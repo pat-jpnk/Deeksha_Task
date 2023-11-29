@@ -27,7 +27,7 @@ limitations, features and interpretations of task:
 - correct file extensions, although not technically required in all cases are made mandatory
 - different file checking methods applied
 - automatic closing, also on exceptions, of files via using "with ... open(...)"
-- code was refactored in last hour to implement DRY principles, no manual testing was performed after due to time issues
+- code was refactored in last hour to implement DRY principles
 
 needed additions:
 - unit testing
@@ -64,9 +64,9 @@ class FileEditor(ABC):
             return True
         
     def verify_file_signature(file_validation_function, file_path, file_extensions):
-        file_name = os.path.split(filepath)[1]
+        file_name = os.path.split(file_path)[1]
 
-        if FileEditor.verify_file_extension(file_name, file_extensions) and file_validation_function(file_path, file_extensions):
+        if FileEditor.verify_file_extension(FileEditor, file_name, file_extensions) and file_validation_function(file_path, file_extensions):
             return True
 
 
@@ -83,7 +83,7 @@ class TextFileEditor(FileEditor):
 
         # check file extension
 
-        if verify_file_extension(file_name, TextFileEditor.file_extensions):
+        if FileEditor.verify_file_extension(self, file_name, TextFileEditor.file_extensions):
             
             # create file
 
@@ -105,7 +105,7 @@ class TextFileEditor(FileEditor):
 
         # check file extension and that file is not binary
 
-        if verify_file_signature(self.file_validation_function, filepath, TextFileEditor.file_extensions):
+        if FileEditor.verify_file_signature(self.file_validation_function, filepath, TextFileEditor.file_extensions):
 
             # add content
 
@@ -114,7 +114,7 @@ class TextFileEditor(FileEditor):
             with open(filepath, 'a') as f:
                 f.write(content)
 
-    def file_validation_function(filepath, file_extensions):
+    def file_validation_function(self, filepath, file_extensions):
         if is_binary(filepath):
             raise ValueError("provided file is binary, text file required")
         else:
@@ -134,7 +134,7 @@ class ExcelFileEditor(FileEditor):
         
         # validate file name
 
-        if verify_file_extension(file_name, TextFileEditor.file_extensions):
+        if FileEditor.verify_file_extension(self, file_name, ExcelFileEditor.file_extensions):
 
             # create file
 
@@ -144,7 +144,7 @@ class ExcelFileEditor(FileEditor):
 
             # TODO: check what if file already exists
 
-            df.to_excel(file_path, index=False, header=False)
+            df.to_excel(file_path, index=True, header=True)
 
 
     # TODO: two sheets in excel can't have the same name
@@ -157,11 +157,11 @@ class ExcelFileEditor(FileEditor):
 
         # check that file exists and file signature is valid
 
-        if verify_file_signature(self.file_validation_function, filepath, ExcelFileEditor.file_extensions):
+        if FileEditor.verify_file_signature(self.file_validation_function, filepath, ExcelFileEditor.file_extensions):
 
             # update file
 
-            with pandas.ExcelWriter(filepath) as w:
+            with pandas.ExcelWriter(filepath, mode="a") as w:
                 try:
                     w.book = openpyxl.load_workbook(filepath)
                     data.to_excel(w, sheet_name=sheet_id)
@@ -169,7 +169,7 @@ class ExcelFileEditor(FileEditor):
                     print(error)
 
 
-    def file_validation_function(filepath, file_extensions):
+    def file_validation_function(self, filepath, file_extensions):
         file_type = filetype.guess_extension(filepath)
 
         if file_type:
@@ -195,7 +195,7 @@ class XMLFileEditor(FileEditor):
         
         # validate file extension
 
-        if verify_file_extension(file_name, TextFileEditor.file_extensions):
+        if FileEditor.verify_file_extension(self, file_name, XMLFileEditor.file_extensions):
 
             # validate that file does not exists
 
@@ -224,7 +224,7 @@ class XMLFileEditor(FileEditor):
         
         # check that file is not binary and that file extension is valid
 
-        if verify_file_signature(self.file_validation_function, filepath, ExcelFileEditor.file_extensions):
+        if FileEditor.verify_file_signature(self.file_validation_function, filepath, XMLFileEditor.file_extensions):
 
             # read contents and verify that it is valid XML
 
@@ -250,16 +250,40 @@ class XMLFileEditor(FileEditor):
                 f.write(xml_content)
 
 
-    def file_validation_function(filepath, file_extensions):
+    def file_validation_function(self, filepath, file_extensions):
         if is_binary(filepath):
             raise ValueError("provided file is binary, text file required")
         else:
             return True
 
 
+if __name__ == "__main__":
+    '''
+    t = TextFileEditor()
+    t.create('<insert pwd>', 'test.txt')
+    t.update('<insert pwd>/test.txt', 'Hello')
+    '''
+
+    '''
+    data = {
+        "calories": [420, 380, 390],
+        "duration": [50, 40, 45]
+    }
+    df = pandas.DataFrame(data)
+    x = ExcelFileEditor()
+    x.create('<insert pwd>', 'test.xlsx')
+    x.update('<insert pwd>/test.xlsx',df,'sheet2290')
+    '''
+    
+    '''
+    m = XMLFileEditor()
+    m.create('<insert pwd>', 'test.xml', 'root')
+    m.update('<insert pwd>/test.xml', 'apple', 'lemon')
+    '''
+
 '''
 useful links:
-
+https://products.aspose.app/cells/viewer
 https://openpyxl.readthedocs.io/en/stable/_modules/openpyxl/utils/exceptions.html#InvalidFileException
 https://support.microsoft.com/en-au/office/file-formats-that-are-supported-in-excel-0943ff2c-6014-4e8d-aaea-b83d51d46247
 https://pypi.org/project/filetype/
