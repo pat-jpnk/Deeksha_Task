@@ -23,7 +23,7 @@ limitations, features and interpretations of task:
 - excel files can only be updated by writing pandas DataFrames to new sheets / sheets must have unique name, causing error
   otherwise, could be handled by adding "-{unique constant}" to name
 - written to be operating system agnostic (functionality across multiple operating systems) - not tested / also no unit
-  testing due to time issues / also no manual tests of excel due to Ubuntu operating system
+  testing due to time issues / manual test of excel files on Ubuntu using https://products.aspose.app/cells/viewer
 - correct file extensions, although not technically required in all cases are made mandatory
 - different file checking methods applied
 - automatic closing, also on exceptions, of files via using "with ... open(...)"
