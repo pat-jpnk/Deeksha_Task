@@ -1,0 +1,13 @@
+
+'''
+Write a program to get/download/fetch/put some content in webpage using request module.
+
+Program should be written using class in python.
+
+Program should have exception handling.
+'''
+
+Before applying, I was working on this project. It uses the requests module in the 
+unit testing portion. It also uses a python library I wrote (https://pypi.org/project/crockford32/).
+
+https://github.com/pat-jpnk/alexandria/tree/master/tests/unit

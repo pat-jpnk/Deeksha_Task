@@ -1,19 +1,49 @@
 Explain the activities Done in any of the CICD tools/platforms/scripts.
+________________________________________________________________________
 
 Git:
+
+GIT is a distributed version control system (was not the first of its kind) that was developed by Linus Torvalds to 
+support the development of the Linux kernel. Aside from the general benefits of using version control, it is essential
+for continuous delivery. Changes to the code base are often used as triggers to start tests of the pipeline. Often CI/CD 
+configurations are stored along with the code, for example CircleCI uses a config.yaml file to define parts of the pipeline.
 
 
 Jenkins:
 
+Jenkins is a software used to create CI/CD pipelines. It is self-hosted and not cloud based, I believe, perhaps there are also
+cloud based options. Jenkins funtionality can be extended using plug-ins. These are maintained by the community and thus can be not
+always up to date, if they are not strongly maintained. CI/CD enables the frequent integration of code from possibly many developers.
+This is made easier and less error prone by actions which are automated - this is essentially what the pipeline is. Actions typically 
+include parts such as linting, building and testing. Aside from this, I think, CI/CD pipelines also include the possibility of including 
+the updating of deployments after successful execution of all steps. One fundamental benefit of CI/CD is that is makes the fast addition of 
+changes to software possible. Although mistakes are still possible, for instance when tests do not cover certain cases.
 
 Zuul:
 
+I do not know enough about Zuul. I believe it was developed by Netflix and is open source, because I remember seeing it in a diagram.
 
-Ansible:
 
+Ansible & Puppet:
 
-Puppet:
+I know that Ansible and Puppet are both configuration management tools. I only know Ansible in more detail and am not familiar with Puppet aside
+from knowing of it. Configuration mangement involves automating and managing infrastructure resources. In Ansible, one can write specifications called
+"playbooks". I have only seen this applied to operating system configuration, there might be other applications (perhaps infrastructure provisioning,
+such as creating virtual machines). In the case of Linux operating systems, this
+could involve things like checking that certain software is installed, that updates are performed, that certain configurations are set (configuration are
+files in Linus operating systems). This can also involve the execution of bash scripts and thus all possible options that they offer. I know that Ansible 
+executes playbook efficiently in a way such that it checks if changes are not fulfilled, before applying them. I also read that Ansible is less applicable to
+very large loads ( > multiple hundreds of machines). To use Ansible, there must be a sort of "main" machine with it installed, that executes its actions on other;
+"client" machines, which also must have Ansible installed. 
+
+In the context of DevOps, automating configurations has certain benefits and applications. It makes steps repeatable, less error-prone and less work intensive. It
+can be applied for deployments of new machines for hosting. I believe it can also be applied in the creation of temporary testing environments (sort of like vagrant).
+
+I know that one alternative to configuration management, in AWS, in the usage of golden AMIs. AMIs (amazon machine images) define the configuration of virtual 
+machines (EC2s) from the operating system upwards. A golden AMI is an AMI that has also wanted configurations set, such that it can be deployed directly and repeatedly.
 
 
 Groovy:
+
+I know that Groovy is a JVM based language that is used to develop Jenkins plug-ins. I know that it is different from Java in that it is not a purely object oriented language.
 

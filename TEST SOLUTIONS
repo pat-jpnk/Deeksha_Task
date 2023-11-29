@@ -1,0 +1,77 @@
+DevOps questions: DevOps_Answers.txt
+
+Python tasks 1), 2), 3) : FileEditor.py
+
+Python task 4): Requests_Task.txt
+
+
+---------------------------------------------------------------------------------------
+
+
+Devops:
+
+Explain the activities Done in any of the CICD tools/platforms/scripts.
+
+Git
+
+Jenkins
+
+Zuul
+
+Ansible
+
+Puppet
+
+Groovy
+
+---------------------------------------------------------------------------------------
+
+Python:
+
+Please solve below questions and code will be examined during interview.
+
+---------------------------------------------------------------------------------------
+
+1)
+
+Write a program to update/create a text file.
+
+Program should be written using class in python.
+
+Program should have exception handling.
+
+Should develop the same program using minimum 2-3 different python modules.
+
+---------------------------------------------------------------------------------------
+
+2)
+
+Write a program to create/update an Excel file.
+
+Program should be written using class in python.
+
+Program should have exception handling.
+
+Should develop the same program using minimum 2-3 different python modules.
+
+---------------------------------------------------------------------------------------
+
+3)
+
+Write a program to create/update a xml file.
+
+Program should be written using class in python.
+
+Program should have exception handling.
+
+Should develop the same program using minimum 2-3 different python modules.
+
+---------------------------------------------------------------------------------------
+
+4)
+
+Write a program to get/download/fetch/put some content in webpage using request module.
+
+Program should be written using class in python.
+
+Program should have exception handling.
