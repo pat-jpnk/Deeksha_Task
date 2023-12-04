@@ -11,3 +11,9 @@ Before applying, I was working on this project. It uses the requests module in t
 unit testing portion. It also uses a python library I wrote (https://pypi.org/project/crockford32/).
 
 https://github.com/pat-jpnk/alexandria/tree/master/tests/unit
+
+-----------------------------------------------------------------------------------------------------------
+
+python3 -m flask --app 'app:create_app("sqlite://alexandria_test.db")' run
+
+pytest ./tests/unit/test_*
