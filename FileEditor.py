@@ -157,6 +157,15 @@ class ExcelFileEditor(FileEditor):
 
         # check that file exists and file signature is valid
 
+        ''' 
+
+        mistake found (13:42, 5th december, check if file exists for excel update was missing
+
+        if not os.path.isfile(filepath):
+          raise FileNotFoundError("file does not exists")
+
+        '''
+
         if FileEditor.verify_file_signature(self.file_validation_function, filepath, ExcelFileEditor.file_extensions):
 
             # update file
